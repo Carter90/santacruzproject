@@ -11,8 +11,11 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def main():
-    return render_template('index.html')
-
+    businesses = list()
+    with open('data/Eat.txt', 'r') as file:
+            businesses = [(bID, *business.split(',')) for bID, business in enumerate(file.read().split('\n'), 1)]
+    businesses.pop() # last one is not a real business #TODO double check after everything is working
+    return render_template('index.html',businesses=businesses)
 
 @app.route('/static/<name>')
 def resource(name) :
