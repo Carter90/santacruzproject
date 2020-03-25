@@ -15,6 +15,8 @@ function bindInfoWindow(marker, mapOrStreetViewObject, infoWindowObject, html) {
     google.maps.event.addListener(marker, 'click', function() {
         infoWindowObject.setContent(html);
         infoWindowObject.open(mapOrStreetViewObject, marker);
+            console.log("In StreetView Clicked"); // This triggers correctly but 
+            console.log("In Aerial View Clicked");
     });
 }
 
