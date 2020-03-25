@@ -11,108 +11,70 @@
 <div id="googleMap" style="width:100%;height:700px;"></div>
 
 <script>
-function bindInfoWindow(marker, mapOrStreetViewObject, infoWindowObject, html) {
+function bindInfoWindow(marker, map, streetView, infoWindowObject, html) {
+    google.maps.event.clearListeners(marker,'click');
     google.maps.event.addListener(marker, 'click', function() {
         infoWindowObject.setContent(html);
-        infoWindowObject.open(mapOrStreetViewObject, marker);
+        if(streetView.getVisible()) {
             console.log("In StreetView Clicked"); // This triggers correctly but 
+            infoWindowObject.open(streetView, marker); // This still puts the popup in the aerial view
+        }
+        else { // normal aerial view
             console.log("In Aerial View Clicked");
+            infoWindowObject.open(map, marker); 
+        }
     });
-}
+    //end bindInfoWindow function
+} 
 
 function myMap() {
-
+    var myMapInfoWindow = new google.maps.InfoWindow;
     var mapProperties= {
       center:new google.maps.LatLng(36.973359, -122.025927),
       zoom:16,
     };
-    var map = new google.maps.Map(document.getElementById("googleMap"),mapProperties);
-
-    var pennysLocation = {lat: 36.974724, lng: -122.027811};
-    var pennyscontentString = '<div id="content">'+
-          '<div id="siteNotice">'+
-          '</div>'+
-          '<h1>The Penny Ice Creamery</h1>'+
-          '<h2>Status</h2>'+
-          '<p>We are open for walk up window service. 1pm - 8pm.</p>'+
-          '<h2>Order</h2>'+
-          '<a href="https://app.upserve.com/s/the-penny-ice-creamery-santa-cruz">Visit their ordering site</a>'+
-          '</div>'+
-          '</div>';
-    var pennymarker = new google.maps.Marker({
-        position: pennysLocation,
-        map: map,
-        title: 'The Penny Ice Creamery'
-      });
-    pennymarker.addListener('click', function() { infowindow.open(map, pennymarker); });
-    var infowindow = new google.maps.InfoWindow({ content: pennyscontentString });
-
-    var saturnLocation = {lat: 36.969039, lng: -122.024613};
-    var saturncontentString = '<div id="content">'+
-          '<div id="siteNotice">'+
-          '</div>'+
-          '<h1>Saturn Cafe</h1>'+
-          '<h2>Status</h2>'+
-          '<p>???</p>'+
-          '<h2>Order</h2>'+
-          '<p>Online ordering is currently not available but feel free to browse our menu.</p>'+
-          '<a href="https://www.toasttab.com/saturn-cafe-santa-cruz/v3#!/">Visit their ordering site</a>'+
-          '</div>'+
-          '</div>';
-    var saturnmarker = new google.maps.Marker({
-        position: saturnLocation,
-        map: map,
-        title: 'Saturn Cafe'
-      });
-    var infowindow2 = new google.maps.InfoWindow({ content: saturncontentString });
-    saturnmarker.addListener('click', function() { infowindow2.open(map, saturnmarker); });
+    var map = new google.maps.Map(document.getElementById("googleMap"), mapProperties);
+    var streetView = map.getStreetView();//= new google.maps.StreetViewPanorama(document.getElementById('googleMap'), mapProperties );
     
-    var woodstocksLocation = {lat: 36.974746, lng: -122.025010};
-    var woodstockscontentString = '<div id="content">'+
+    
+    {% for business in businesses %}
+        var location{{business[0]}} = {lat: {{business[2]}}, lng: {{business[1]}}};
+        var contentString{{business[0]}} = "{{business[3]}}";
+        var marker{{business[0]}} = new google.maps.Marker({
+            position: location{{business[0]}},
+            map: map,
+            title: "{{business[3]}}"
+        });
+        
+        bindInfoWindow(marker{{business[0]}}, map, streetView, myMapInfoWindow, '<div id="content">'+
           '<div id="siteNotice">'+
           '</div>'+
-          '<h1>Woodstock\'s Pizza</h1>'+
+          '<h1>{{business[3]}}</h1>'+
+          '<h2>Address</h2>'+ 
+          '<p>{{business[4]}}</p>'+ 
           '<h2>Status</h2>'+
-          '<p>Order Online</p>'+
+          '<p>??</p>'+
           '<h2>Order</h2>'+
-          '<a href="https://woodstocks-pizza-santa-cruz.securebrygid.com/zgrid/proc/site/sitep.jsp">Visit their ordering site</a>'+
+          '<a href="https://downtownsantacruz.com{{business[5]}}">Visit association site</a>'+
           '</div>'+
-          '</div>';
-    var woodstocksmarker = new google.maps.Marker({
-        position: woodstocksLocation,
-        map: map,
-        title: 'Woodstock\'s Pizza'
-      });
-      
-      /*
-      var panorama = new google.maps.StreetViewPanorama(
-      document.getElementById('pano'), {
-        position: woodstocksLocation,
-        pov: {
-          heading: 34,
-          pitch: 10
-        }
-      });
-  //map.setStreetView(panorama);
-  */
+          '</div>');
+    {% endfor %}
+    
+    
+    /* // Image overlay currently shows in both aerial and street
+    var smoothiesMarker = new google.maps.Marker({
+        position: {lat: 36.97335, lng: -122.02592},
+        map: streetView,
+        icon: 'http://img2.wikia.nocookie.net/__cb20140313161255/hayday/images/a/a8/Berry_Smoothie.png',
+        title: 'smoothies'
+    });
+    */
+    //end myMap function
+} 
 
-    //var infowindow3 = new google.maps.InfoWindow({ content: woodstockscontentString });
-    //woodstocksmarker.addListener('click', function() { infowindow3.open(map, woodstocksmarker); });
-
-
-//Define the local variables that we'll use in the calls
-var myMapInfoWindow = new google.maps.InfoWindow;
-var myStreetViewInfoWindow = new google.maps.InfoWindow;
-//var streetView = map.getStreetView();
-
-// Remove any existing listeners from the marker
-//google.maps.event.clearListeners(woodstocksmarker,'click');
-
-// Bind the event for the map marker click
-bindInfoWindow(woodstocksmarker, map, myMapInfoWindow, woodstockscontentString);
-//Bind the event for the StreetView marker click
-//bindInfoWindow(woodstocksmarker, panorama, myStreetViewInfoWindow, woodstockscontentString);
-}
+//https://developers.google.com/maps/documentation/javascript/streetview
+//https://developers.google.com/maps/documentation/javascript/examples/streetview-service
+//I want the street view to look like this but also the full map https://jsfiddle.net/upsidown/9h21jzc7/
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVjNL6rNtWlbUFymUbRb3KFRvMDTkIC-k&callback=myMap"></script>
