@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.6
 ''' 
 Carter Frost
 For hosting a website for Santa Cruz Map for businesses a virtual downtown shopping experience, making it easier for locals to support local businesses. 
