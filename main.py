@@ -13,6 +13,11 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def main():
+	# this is a hack until we have access to the data in the API
+	# this gets a list of businesses that delver, a few items are interpreted improperly
+	deliver_list = [str(bName).split("<h2>")[1].split("</h2>")[0] for bName in
+	requests.get(url="https://downtownsantacruz.com/downtown-delivered").iter_lines() if "<h2>" in str(bName)]
+
 	businesses_data = requests.get(url="https://downtownsantacruz.com/_api/v2/points.json").json()
 	businesses = [(business['properties']['point_id'],
 	               business['geometry']['coordinates'][0],
