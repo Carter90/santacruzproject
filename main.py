@@ -25,7 +25,7 @@ def main():
 	               business['properties']['point_name'],
 	               business['properties']['address1'],
 	               "/go/" + business['properties']['point_alias']
-	               ) for business in businesses_data]
+	               ) for business in businesses_data if business['properties']['point_name'] in deliver_list]
 	return render_template('index.html', businesses=businesses)
 
 
