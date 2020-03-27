@@ -6,28 +6,42 @@ making it easier for locals to support local businesses.
 """
 
 import requests
-from flask import Flask, render_template
-
+from flask import Flask
+import json
 app = Flask(__name__)
 
 
-@app.route('/', methods=['GET'])
+@app.route('/dining.json', methods=['GET'])
 def main():
-	# this is a hack until we have access to the data in the API
-	# this gets a list of businesses that delver, a few items are interpreted improperly
-	deliver_list = [str(bName).split("<h2>")[1].split("</h2>")[0] for bName in
-	requests.get(url="https://downtownsantacruz.com/downtown-delivered").iter_lines() if "<h2>" in str(bName)]
+	dining_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-dining.json").json()
+	dining = dict()
+	content = {'header': "I'm a header", 'header_link': "https://baconipsum.com/",
+	           'subheader1': "I'm the first subheading", 'subheader1_link': "https://baconipsum.com/",
+	           'subheader2': "I'm the second subheading" , 'subheader2_link': "https://baconipsum.com/",
+	           'subheader3': "I'm the thrid subheading", 'subheader3_link': "https://baconipsum.com/"}
+	pictures = ["https://woodstocksslo.com/wp-content/uploads/sites/6/2019/03/Triple_Threat_Menu_Header-min-1024x421.jpg",
+	            "https://woodstocksdavis.com/wp-content/uploads/sites/9/2018/02/Menu_Hero_TLSB_8757224_9921733.jpg"]
 
-	businesses_data = requests.get(url="https://downtownsantacruz.com/_api/v2/points.json").json()
-	businesses = [(business['properties']['point_id'],
-	               business['geometry']['coordinates'][0],
-	               business['geometry']['coordinates'][1],
-	               business['properties']['point_name'],
-	               business['properties']['address1'],
-	               "/go/" + business['properties']['point_alias']
-	               ) for business in businesses_data if business['properties']['point_name'] in deliver_list]
-	return render_template('index.html', businesses=businesses)
+	online_order_link = "https://woodstocks-pizza-santa-cruz.securebrygid.com/zgrid/proc/site/sitep.jsp"
 
+	for business in dining_data:
+		dining[business['properties']['point_id']] = ({'DTA_data': business, 'images': pictures, 'online_order_link': online_order_link, 'content': content})
+	'''
+	dining = [(business['properties']['point_id'],
+           business['geometry']['coordinates'][0],
+           business['geometry']['coordinates'][1],
+           business['properties']['point_name'],
+           business['properties']['address1'],
+           render_template('InfoWindow.html', properties=business['properties'])
+
+           ) for business in dining_data if ((business['properties']['covid-delivery'] == '1') or
+                                             (business['properties']['covid-gift-cards'] == '1') or
+                                             (business['properties']['covid-pickup'] == '1') or
+                                             (business['properties']['covid-takeout'] == '1'))] #covid-online-shopping retail
+	'''
+	return json.dumps(dining)
+
+#retail_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-retail.json").json()
 
 @app.route('/static/<name>')
 def resource(name):
