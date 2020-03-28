@@ -6,10 +6,15 @@ making it easier for locals to support local businesses.
 """
 
 import requests
+import requests_cache
 from flask import Flask
 import json
+
 app = Flask(__name__)
 
+#run on import
+requests_cache.install_cache(cache_name='dining_cache', expire_after=600) 
+#requests_cache.install_cache(cache_name='retail_cache', expire_after=600)
 
 @app.route('/dining.json', methods=['GET'])
 def main():
