@@ -13,7 +13,7 @@ import json
 app = Flask(__name__)
 
 #run on import
-requests_cache.install_cache(cache_name='dining_cache', expire_after=600) 
+requests_cache.install_cache(cache_name='dining_cache', backend='memory', expire_after=600) 
 #requests_cache.install_cache(cache_name='retail_cache', expire_after=600)
 
 @app.route('/dining.json', methods=['GET'])
