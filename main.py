@@ -50,11 +50,12 @@ def main():
 					                                                           'subheader1': bussness_row[4],
 					                                                           'subheader1_link': bussness_row[5],
 					                                                           }})
-				else:
-					pass
-					dining[business['properties']['point_id']] = (
-					{'DTA_data': business, 'images': pictures, 'online_order_link': online_order_link,
-					 'content': content})
+			if business['properties']['point_id'] not in dining:
+				dining[business['properties']['point_id']] = ({'DTA_data': business,
+				                                               'images': pictures,
+				                                               'online_order_link': online_order_link,
+				                                               'content': content})
+
 	return json.dumps(dining)
 
 #retail_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-retail.json").json()
