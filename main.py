@@ -9,8 +9,12 @@ import requests
 import requests_cache
 from flask import Flask
 import json
+import csv
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 #run on import
 requests_cache.install_cache(cache_name='dining_cache', backend='memory', expire_after=600) 
