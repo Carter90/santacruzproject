@@ -16,7 +16,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-#run on import
+#  run on import
 requests_cache.install_cache(cache_name='dining_cache', backend='memory', expire_after=600) 
 #requests_cache.install_cache(cache_name='retail_cache', expire_after=600)
 
@@ -24,30 +24,37 @@ requests_cache.install_cache(cache_name='dining_cache', backend='memory', expire
 def main():
 	dining_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-dining.json").json()
 	dining = dict()
+	form_data = list()
 	content = {'header': "I'm a header", 'header_link': "https://baconipsum.com/",
-	           'subheader1': "I'm the first subheading", 'subheader1_link': "https://baconipsum.com/",
-	           'subheader2': "I'm the second subheading" , 'subheader2_link': "https://baconipsum.com/",
-	           'subheader3': "I'm the thrid subheading", 'subheader3_link': "https://baconipsum.com/"}
+				'subheader1': "I'm the first subheading", 'subheader1_link': "https://baconipsum.com/",
+				'subheader2': "I'm the second subheading" , 'subheader2_link': "https://baconipsum.com/",
+				'subheader3': "I'm the thrid subheading", 'subheader3_link': "https://baconipsum.com/"}
 	pictures = ["https://woodstocksslo.com/wp-content/uploads/sites/6/2019/03/Triple_Threat_Menu_Header-min-1024x421.jpg",
-	            "https://woodstocksdavis.com/wp-content/uploads/sites/9/2018/02/Menu_Hero_TLSB_8757224_9921733.jpg"]
+			"https://woodstocksdavis.com/wp-content/uploads/sites/9/2018/02/Menu_Hero_TLSB_8757224_9921733.jpg"]
 
 	online_order_link = "https://woodstocks-pizza-santa-cruz.securebrygid.com/zgrid/proc/site/sitep.jsp"
 
-	for business in dining_data:
-		dining[business['properties']['point_id']] = ({'DTA_data': business, 'images': pictures, 'online_order_link': online_order_link, 'content': content})
-	'''
-	dining = [(business['properties']['point_id'],
-           business['geometry']['coordinates'][0],
-           business['geometry']['coordinates'][1],
-           business['properties']['point_name'],
-           business['properties']['address1'],
-           render_template('InfoWindow.html', properties=business['properties'])
-
-           ) for business in dining_data if ((business['properties']['covid-delivery'] == '1') or
-                                             (business['properties']['covid-gift-cards'] == '1') or
-                                             (business['properties']['covid-pickup'] == '1') or
-                                             (business['properties']['covid-takeout'] == '1'))] #covid-online-shopping retail
-	'''
+	CSV_URL = 'https://docs.google.com/spreadsheets/d/1aCrPNN8GxowAwFjAo56SPBPmR24-iV9GLjnnGAu66O4/export?format=csv&id=1aCrPNN8GxowAwFjAo56SPBPmR24-iV9GLjnnGAu66O4&gid=1716473960'
+	with requests.Session() as s:
+		download = s.get(CSV_URL)
+		decoded_content = download.content.decode('utf-8')
+		form_data = list(csv.reader(decoded_content.splitlines(), delimiter=','))[1:]
+		for business in dining_data:
+			for bussness_row in form_data:
+				if(business['properties']['point_name'] == bussness_row[1]):
+					dining[business['properties']['point_id']] = ({'DTA_data': business,
+					                                               'images': [bussness_row[6],bussness_row[7],bussness_row[8],bussness_row[9],bussness_row[10]],
+					                                               'online_order_link': bussness_row[3],
+					                                               'content': {'header': bussness_row[2],
+					                                                           'header_link': bussness_row[3],
+					                                                           'subheader1': bussness_row[4],
+					                                                           'subheader1_link': bussness_row[5],
+					                                                           }})
+				else:
+					pass
+					dining[business['properties']['point_id']] = (
+					{'DTA_data': business, 'images': pictures, 'online_order_link': online_order_link,
+					 'content': content})
 	return json.dumps(dining)
 
 #retail_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-retail.json").json()
