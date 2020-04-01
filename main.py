@@ -16,21 +16,23 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-#  run on import
-requests_cache.install_cache(cache_name='dining_cache', backend='memory', expire_after=600) 
-#requests_cache.install_cache(cache_name='retail_cache', expire_after=600)
 
-@app.route('/dining.json', methods=['GET'])
+#  run on import
+requests_cache.install_cache(cache_name='dining_cache', backend='memory', expire_after=600)
+requests_cache.install_cache(cache_name='retail_cache', backend='memory', expire_after=600)
+
+@app.route('/', methods=['GET'])
 def main():
 	dining_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-dining.json").json()
-	dining = dict()
-	form_data = list()
+	retail_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-retail.json").json()
+	businesses = dict()
 	content = {'header': "I'm a header", 'header_link': "https://baconipsum.com/",
-				'subheader1': "I'm the first subheading", 'subheader1_link': "https://baconipsum.com/",
-				'subheader2': "I'm the second subheading" , 'subheader2_link': "https://baconipsum.com/",
-				'subheader3': "I'm the thrid subheading", 'subheader3_link': "https://baconipsum.com/"}
-	pictures = ["https://woodstocksslo.com/wp-content/uploads/sites/6/2019/03/Triple_Threat_Menu_Header-min-1024x421.jpg",
-			"https://woodstocksdavis.com/wp-content/uploads/sites/9/2018/02/Menu_Hero_TLSB_8757224_9921733.jpg"]
+	           'subheader1': "I'm the first subheading", 'subheader1_link': "https://baconipsum.com/",
+	           'subheader2': "I'm the second subheading", 'subheader2_link': "https://baconipsum.com/",
+	           'subheader3': "I'm the thrid subheading", 'subheader3_link': "https://baconipsum.com/"}
+	pictures = ["http://www.slojazzfest.org/uploads/1/7/0/6/17061274/woodstock-pizza-jpeg_6_orig.jpg",
+	            "https://woodstocksslo.com/wp-content/uploads/sites/6/2019/03/Triple_Threat_Menu_Header-min-1024x421.jpg",
+	            "https://woodstocksdavis.com/wp-content/uploads/sites/9/2018/02/Menu_Hero_TLSB_8757224_9921733.jpg"]
 
 	online_order_link = "https://woodstocks-pizza-santa-cruz.securebrygid.com/zgrid/proc/site/sitep.jsp"
 
@@ -40,25 +42,47 @@ def main():
 		decoded_content = download.content.decode('utf-8')
 		form_data = list(csv.reader(decoded_content.splitlines(), delimiter=','))[1:]
 		for business in dining_data:
-			for bussness_row in form_data:
-				if(business['properties']['point_name'] == bussness_row[1]):
-					dining[business['properties']['point_id']] = ({'DTA_data': business,
-					                                               'images': [bussness_row[6],bussness_row[7],bussness_row[8],bussness_row[9],bussness_row[10]],
-					                                               'online_order_link': bussness_row[3],
-					                                               'content': {'header': bussness_row[2],
-					                                                           'header_link': bussness_row[3],
-					                                                           'subheader1': bussness_row[4],
-					                                                           'subheader1_link': bussness_row[5],
+			for business_row in form_data:
+				if (business['properties']['point_name'] == business_row[1]):
+					businesses[business['properties']['point_id']] = ({'DTA_data': business,
+					                                               'type': 'dining',
+					                                               'images': [business_row[6], business_row[7],
+					                                                          business_row[8], business_row[9],
+					                                                          business_row[10]],
+					                                               'online_order_link': business_row[3],
+					                                               'content': {'header': business_row[2],
+					                                                           'header_link': business_row[3],
+					                                                           'subheader1': business_row[4],
+					                                                           'subheader1_link': business_row[5],
 					                                                           }})
-			if business['properties']['point_id'] not in dining:
-				dining[business['properties']['point_id']] = ({'DTA_data': business,
+			if business['properties']['point_id'] not in businesses:
+				businesses[business['properties']['point_id']] = ({'DTA_data': business,
+				                                               'type': 'dining',
 				                                               'images': pictures,
 				                                               'online_order_link': online_order_link,
 				                                               'content': content})
+		for business in retail_data:
+			for business_row in form_data:
+				if (business['properties']['point_name'] == business_row[1]):
+					businesses[business['properties']['point_id']] = ({'DTA_data': business,
+					                                               'type': 'retail',
+					                                               'images': [business_row[6], business_row[7],
+					                                                          business_row[8], business_row[9],
+					                                                          business_row[10]],
+					                                               'online_order_link': business_row[3],
+					                                               'content': {'header': business_row[2],
+					                                                           'header_link': business_row[3],
+					                                                           'subheader1': business_row[4],
+					                                                           'subheader1_link': business_row[5],
+					                                                           }})
+			if business['properties']['point_id'] not in businesses:
+				businesses[business['properties']['point_id']] = ({'DTA_data': business,
+				                                               'type': 'dining',
+				                                               'images': pictures,
+				                                               'online_order_link': online_order_link,
+				                                               'content': content})
+	return json.dumps(businesses)
 
-	return json.dumps(dining)
-
-#retail_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-retail.json").json()
 
 @app.route('/static/<name>')
 def resource(name):
