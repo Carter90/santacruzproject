@@ -12,36 +12,26 @@ import json
 import csv
 from flask_cors import CORS
 
+# from flask_cors import CORS
+
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-
 
 #  run on import
 requests_cache.install_cache(cache_name='dining_cache', backend='memory', expire_after=600)
 requests_cache.install_cache(cache_name='retail_cache', backend='memory', expire_after=600)
 
 # TODO: separate in into separate functions with timers to update fields instead of waiting for a request
+
+
 @app.route('/', methods=['GET'])
 def main():
-	dining_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-dining.json").json()
-	retail_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-retail.json").json()
-	groups_dict = _groups()  # get the groups in a reasonable form
-	points_base_group_url = "https://downtownsantacruz.com/_api/v2/points.json?m=10&group="
-	business_id_group = dict()
-	for group in groups_dict.keys():
-		group_businesses = requests.get(points_base_group_url + str(group)).json()
-		for business in group_businesses:
-			#groups_dict[str(group)]['group_depth']
-			#business['properties']['point_id']
-			#business_id_group[business['properties']['point_id']]['group_depth']
-			if (business['properties']['point_id'] not in business_id_group):# \
-					#or ( int(groups_dict[str(group)]['group_depth']) > int(business_id_group[business['properties']['point_id']]['group_depth'])):
-				business_id_group[business['properties']['point_id']] = group
-	# group_id
-
-	#  groups = {value['properties']['group_id']: value['properties'] for (key, value) in group_data.items()}
-
+	rideoutthewave_data = requests.get(url="https://rotwsc.s3-us-west-1.amazonaws.com/data/latest.json").json()[
+		'results']
+	# @Note: change rotw_business['gift_card_link'] to rotw_business if we want to use ride the wave's data
+	rideoutthewave_dict = {rotw_business['name']: rotw_business['gift_card_link'] for rotw_business in rideoutthewave_data if 'Santa Cruz'
+	                       in rotw_business['town']}
 	businesses = dict()
 	content = {'header': "I'm a header", 'header_link': "https://baconipsum.com/",
 	           'subheader1': "I'm the first subheading", 'subheader1_link': "https://baconipsum.com/",
@@ -51,6 +41,7 @@ def main():
 	            "https://woodstocksslo.com/wp-content/uploads/sites/6/2019/03/Triple_Threat_Menu_Header-min-1024x421.jpg",
 	            "https://woodstocksdavis.com/wp-content/uploads/sites/9/2018/02/Menu_Hero_TLSB_8757224_9921733.jpg"]
 
+	gift_card_link = "https://woodstockscruz.com/gift-cards/"
 	online_order_link = "https://woodstocks-pizza-santa-cruz.securebrygid.com/zgrid/proc/site/sitep.jsp"
 
 	CSV_URL = 'https://docs.google.com/spreadsheets/d/1aCrPNN8GxowAwFjAo56SPBPmR24-iV9GLjnnGAu66O4/export?format=csv&id=1aCrPNN8GxowAwFjAo56SPBPmR24-iV9GLjnnGAu66O4&gid=1716473960'
@@ -63,20 +54,24 @@ def main():
 				if (business['properties']['point_name'] == business_row[1]):
 					businesses[business['properties']['point_id']] = ({'DTA_data': business,
 					                                                   'group': groups_dict[business_id_group[
-					                                                   str(business['properties']['point_id'])]] if
-				                                                   business['properties'][
-					                                                   'point_id'] in business_id_group else
-				                                                   groups_dict['1'],
+						                                                   str(business['properties']['point_id'])]] if
+					                                                   business['properties'][
+						                                                   'point_id'] in business_id_group else
+					                                                   groups_dict['1'],
 					                                                   'type': 'dining',
 					                                                   'images': [business_row[6], business_row[7],
 					                                                              business_row[8], business_row[9],
 					                                                              business_row[10]],
 					                                                   'online_order_link': business_row[3],
+					                                                   'gift_card_link': rideoutthewave_dict[
+						                                                   business_row[1]] if business_row[
+							                                                                       1] in rideoutthewave_dict else gift_card_link,
 					                                                   'content': {'header': business_row[2],
 					                                                               'header_link': business_row[3],
 					                                                               'subheader1': business_row[4],
 					                                                               'subheader1_link': business_row[5],
 					                                                               }})
+
 			if business['properties']['point_id'] not in businesses:
 				businesses[business['properties']['point_id']] = ({'DTA_data': business,
 				                                                   'group': groups_dict[business_id_group[
@@ -87,6 +82,9 @@ def main():
 				                                                   'type': 'dining',
 				                                                   'images': pictures,
 				                                                   'online_order_link': online_order_link,
+				                                                   'gift_card_link': rideoutthewave_dict[
+					                                                   business_row[1]] if business_row[
+						                                                                       1] in rideoutthewave_dict else gift_card_link,
 				                                                   'content': content})
 		for business in retail_data:
 			for business_row in form_data:
@@ -102,6 +100,9 @@ def main():
 					                                                              business_row[8], business_row[9],
 					                                                              business_row[10]],
 					                                                   'online_order_link': business_row[3],
+					                                                   'gift_card_link': rideoutthewave_dict[
+						                                                   business_row[1]] if business_row[
+							                                                                       1] in rideoutthewave_dict else gift_card_link,
 					                                                   'content': {'header': business_row[2],
 					                                                               'header_link': business_row[3],
 					                                                               'subheader1': business_row[4],
@@ -117,9 +118,12 @@ def main():
 				                                                   'type': 'retail',
 				                                                   'images': pictures,
 				                                                   'online_order_link': online_order_link,
+				                                                   'gift_card_link': rideoutthewave_dict[
+					                                                   business_row[1]] if business_row[
+						                                                                       1] in rideoutthewave_dict else gift_card_link,
 				                                                   'content': content})
-	return json.dumps(businesses)
 
+	return json.dumps(businesses)
 
 def _groups():
 	group_data = requests.get("https://downtownsantacruz.com/_api/v2/groups.json").json()
@@ -147,6 +151,19 @@ def server_error(e):
 	print("Borked", e)
 	return 'I done borked up.', 500
 
+
+dining_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-dining.json").json()
+retail_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-retail.json").json()
+
+groups_dict = _groups()  # get the groups in a reasonable form
+points_base_group_url = "https://downtownsantacruz.com/_api/v2/points.json?m=10&group="
+business_id_group = dict()
+for group in groups_dict.keys():
+	group_businesses = requests.get(points_base_group_url + str(group)).json()
+	for business in group_businesses:
+		if (business['properties']['point_id'] not in business_id_group):  # \
+			# or ( int(groups_dict[str(group)]['group_depth']) > int(business_id_group[business['properties']['point_id']]['group_depth'])):
+			business_id_group[business['properties']['point_id']] = group
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=8080)
