@@ -29,6 +29,9 @@ const fetchData = async () => {
     //console.log(data)
     return data
   })
+  .catch(function() {
+        console.log("main data fetch error");
+  });
 }
 
 //overlay controls
@@ -44,29 +47,28 @@ const closeOverlay = () => {
 }
 
 const seeMore = () => {
+  ViewController.addPrevious(lat, lng);
   goHere()
   //populate with business info
   openOverlay()
-
 }
 
 const goHere = async () => {
   const lng = CurrentMarker.position.lng()
   const lat = CurrentMarker.position.lat()
   const roadCoords = await getRoadCoords(lat,lng)
+  console.log('go here', lng, lat, roadCoords)
   let goto = new google.maps.LatLng(roadCoords.latitude, roadCoords.longitude)
   panorama.setPosition(goto)
 }
 
 const goInside = () => {
-  goHere()
-  .then(function(){
-    const lng = CurrentMarker.position.lng()
-    const lat = CurrentMarker.position.lat()
-    //const roadCoords = getRoadCoords(lat,lng)
-    let goto = new google.maps.LatLng(lat, lng)
-    panorama.setPosition(goto)
-  })
+  console.log('go inside')
+  const lng = CurrentMarker.position.lng()
+  const lat = CurrentMarker.position.lat()
+  //const roadCoords = getRoadCoords(lat,lng)
+  let goto = new google.maps.LatLng(lat, lng)
+  panorama.setPosition(goto)
 }
 
 // Gets Coordinates of road from nearest lat, lng using roads api
@@ -76,7 +78,7 @@ const getRoadCoords = async (lat, lng) => {
     return response.json()
   })
   .then((data)=>{
-    console.log('dat data', data)
+    //console.log('dat data', data)
     return data.snappedPoints[0].location
   })
 }
@@ -144,7 +146,7 @@ window.map = new google.maps.Map(document.getElementById('map'), {
   })
 
   // set panorama
-window. panorama = new google.maps.StreetViewPanorama(
+window.panorama = new google.maps.StreetViewPanorama(
       document.getElementById('pano'), {
         position: startPacific,
         mode : 'webgl',
