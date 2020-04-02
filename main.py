@@ -26,6 +26,22 @@ requests_cache.install_cache(cache_name='retail_cache', backend='memory', expire
 def main():
 	dining_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-dining.json").json()
 	retail_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-retail.json").json()
+	groups_dict = _groups()  # get the groups in a reasonable form
+	points_base_group_url = "https://downtownsantacruz.com/_api/v2/points.json?m=10&group="
+	business_id_group = dict()
+	for group in groups_dict.keys():
+		group_businesses = requests.get(points_base_group_url + str(group)).json()
+		for business in group_businesses:
+			#groups_dict[str(group)]['group_depth']
+			#business['properties']['point_id']
+			#business_id_group[business['properties']['point_id']]['group_depth']
+			if (business['properties']['point_id'] not in business_id_group):# \
+					#or ( int(groups_dict[str(group)]['group_depth']) > int(business_id_group[business['properties']['point_id']]['group_depth'])):
+				business_id_group[business['properties']['point_id']] = group
+	# group_id
+
+	#  groups = {value['properties']['group_id']: value['properties'] for (key, value) in group_data.items()}
+
 	businesses = dict()
 	content = {'header': "I'm a header", 'header_link': "https://baconipsum.com/",
 	           'subheader1': "I'm the first subheading", 'subheader1_link': "https://baconipsum.com/",
@@ -46,42 +62,62 @@ def main():
 			for business_row in form_data:
 				if (business['properties']['point_name'] == business_row[1]):
 					businesses[business['properties']['point_id']] = ({'DTA_data': business,
-					                                               'type': 'dining',
-					                                               'images': [business_row[6], business_row[7],
-					                                                          business_row[8], business_row[9],
-					                                                          business_row[10]],
-					                                               'online_order_link': business_row[3],
-					                                               'content': {'header': business_row[2],
-					                                                           'header_link': business_row[3],
-					                                                           'subheader1': business_row[4],
-					                                                           'subheader1_link': business_row[5],
-					                                                           }})
+					                                                   'group': groups_dict[business_id_group[
+					                                                   str(business['properties']['point_id'])]] if
+				                                                   business['properties'][
+					                                                   'point_id'] in business_id_group else
+				                                                   groups_dict['1'],
+					                                                   'type': 'dining',
+					                                                   'images': [business_row[6], business_row[7],
+					                                                              business_row[8], business_row[9],
+					                                                              business_row[10]],
+					                                                   'online_order_link': business_row[3],
+					                                                   'content': {'header': business_row[2],
+					                                                               'header_link': business_row[3],
+					                                                               'subheader1': business_row[4],
+					                                                               'subheader1_link': business_row[5],
+					                                                               }})
 			if business['properties']['point_id'] not in businesses:
 				businesses[business['properties']['point_id']] = ({'DTA_data': business,
-				                                               'type': 'dining',
-				                                               'images': pictures,
-				                                               'online_order_link': online_order_link,
-				                                               'content': content})
+				                                                   'group': groups_dict[business_id_group[
+					                                                   str(business['properties']['point_id'])]] if
+				                                                   business['properties'][
+					                                                   'point_id'] in business_id_group else
+				                                                   groups_dict['1'],
+				                                                   'type': 'dining',
+				                                                   'images': pictures,
+				                                                   'online_order_link': online_order_link,
+				                                                   'content': content})
 		for business in retail_data:
 			for business_row in form_data:
 				if (business['properties']['point_name'] == business_row[1]):
 					businesses[business['properties']['point_id']] = ({'DTA_data': business,
-					                                               'type': 'retail',
-					                                               'images': [business_row[6], business_row[7],
-					                                                          business_row[8], business_row[9],
-					                                                          business_row[10]],
-					                                               'online_order_link': business_row[3],
-					                                               'content': {'header': business_row[2],
-					                                                           'header_link': business_row[3],
-					                                                           'subheader1': business_row[4],
-					                                                           'subheader1_link': business_row[5],
-					                                                           }})
+					                                                   'group': groups_dict[business_id_group[
+						                                                   str(business['properties']['point_id'])]] if
+					                                                   business['properties'][
+						                                                   'point_id'] in business_id_group else
+					                                                   groups_dict['4'],
+					                                                   'type': 'retail',
+					                                                   'images': [business_row[6], business_row[7],
+					                                                              business_row[8], business_row[9],
+					                                                              business_row[10]],
+					                                                   'online_order_link': business_row[3],
+					                                                   'content': {'header': business_row[2],
+					                                                               'header_link': business_row[3],
+					                                                               'subheader1': business_row[4],
+					                                                               'subheader1_link': business_row[5],
+					                                                               }})
 			if business['properties']['point_id'] not in businesses:
 				businesses[business['properties']['point_id']] = ({'DTA_data': business,
-				                                               'type': 'dining',
-				                                               'images': pictures,
-				                                               'online_order_link': online_order_link,
-				                                               'content': content})
+				                                                   'group': groups_dict[business_id_group[
+					                                                   str(business['properties']['point_id'])]] if
+				                                                   business['properties'][
+					                                                   'point_id'] in business_id_group else
+				                                                   groups_dict['4'],
+				                                                   'type': 'retail',
+				                                                   'images': pictures,
+				                                                   'online_order_link': online_order_link,
+				                                                   'content': content})
 	return json.dumps(businesses)
 
 
