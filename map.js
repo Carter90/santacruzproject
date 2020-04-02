@@ -13,9 +13,8 @@ let ViewController = {
   }
 }
 
-let BusinessObj = {
-
-}
+let BusinessObj = {}
+let CurrentMarker = {}
 
 // Initial Fetch of Business Data
 const fetchData = async () => {
@@ -45,43 +44,45 @@ const closeOverlay = () => {
 }
 
 const seeMore = () => {
-  console.log('business', this)
-  //goHere()
+  goHere()
   //populate with business info
-  // open overlay
+  openOverlay()
 
 }
 
-const goHere = () => {
-  console.log('test', BusinessObj)
-  const lat = BusinessObj.DTA_data.geometry.coordinates[0]
-  const lng = BusinessObj.DTA_data.geometry.coordinates[1]
-  //const roadCoords = getRoadCoords(lat,lng)
-  let goto = new google.maps.LatLng(lng, lat)
+const goHere = async () => {
+  const lng = CurrentMarker.position.lng()
+  const lat = CurrentMarker.position.lat()
+  const roadCoords = await getRoadCoords(lat,lng)
+  let goto = new google.maps.LatLng(roadCoords.latitude, roadCoords.longitude)
   panorama.setPosition(goto)
 }
 
 const goInside = () => {
-  //console.log("go inside")
-  //use parameters from marker
+  goHere()
+  .then(function(){
+    const lng = CurrentMarker.position.lng()
+    const lat = CurrentMarker.position.lat()
+    //const roadCoords = getRoadCoords(lat,lng)
+    let goto = new google.maps.LatLng(lat, lng)
+    panorama.setPosition(goto)
+  })
 }
 
 // Gets Coordinates of road from nearest lat, lng using roads api
 const getRoadCoords = async (lat, lng) => {
-  //console.log('nearest', lat, lng)
-  return await fetch('https://roads.googleapis.com/v1/nearestRoads?points=' + lng + ',' + lat + '&key=AIzaSyD5ZcF1cseojjobcQcbDKy2PC1YyGwNGlo')
+  return await fetch('https://roads.googleapis.com/v1/nearestRoads?points=' + lat + ',' + lng + '&key=AIzaSyD5ZcF1cseojjobcQcbDKy2PC1YyGwNGlo')
   .then((response) => {
     return response.json()
   })
   .then((data)=>{
+    console.log('dat data', data)
     return data.snappedPoints[0].location
   })
 }
 
 // Info Window Addon Controller
 const addInfoWindow = (marker, businessObj, isPanoramic) => {
-  console.log(businessObj)
-  console.log(marker)
 
   Object.assign(BusinessObj, businessObj)
 
@@ -94,8 +95,8 @@ const addInfoWindow = (marker, businessObj, isPanoramic) => {
         '<div id="bodyContent">'+
         '<p><b>content</b>'+
         '</div>'+
-      ' <input type="button" value="See More" onclick="seeMore()"></input>'+
-      ' <input type="button" value="Come Inside" onclick="goInside()"></input>'+
+      ' <input id="seemore" type="button" value="See More" onclick="seeMore()"></input>'+
+      ' <input id="comeinside" type="button" value="Go Inside" onclick="goInside()"></input>'+
         '</div>'
     }
 
@@ -104,7 +105,7 @@ const addInfoWindow = (marker, businessObj, isPanoramic) => {
           '<div id="siteNotice">'+
           '</div>'+
           '<div id="firstHeading" class="firstHeading">' + businessObj.DTA_data.properties.point_name + '</div>'+
-        ' <input type="button" value="Go Here" onclick="goHere()"></input>'+
+        ' <input id="gohere" type="button" value="Go Here" onclick="goHere()"></input>'+
           '</div>'
     }
 
@@ -112,9 +113,9 @@ const addInfoWindow = (marker, businessObj, isPanoramic) => {
         content: content
     })
     marker.addListener('click', function () {
+      Object.assign(CurrentMarker, marker)
       infoWindow.open(map, marker)
     })
-
     // marker.addListener('mouseover', function () {
     //   infoWindow.open(map, marker)
     // })
@@ -136,14 +137,14 @@ async function initialize() {
   //starting coordinates
   let startPacific = {lat: 36.976725, lng: -122.0269576}
 
-  let map = new google.maps.Map(document.getElementById('map'), {
+window.map = new google.maps.Map(document.getElementById('map'), {
     center: startPacific,
     zoom: 18,
     visible: true
   })
 
   // set panorama
-  let panorama = new google.maps.StreetViewPanorama(
+window. panorama = new google.maps.StreetViewPanorama(
       document.getElementById('pano'), {
         position: startPacific,
         mode : 'webgl',
@@ -186,7 +187,7 @@ async function initialize() {
 
     let mapMarkers = new google.maps.Marker({
       position: new google.maps.LatLng(cords[1],cords[0]),
-      map: map,
+      map: window.map,
       icon: image,
       shape: shape,
       title: name
@@ -194,7 +195,7 @@ async function initialize() {
 
     let panoMarker = new google.maps.Marker({
        position: new google.maps.LatLng(cords[1],cords[0]),
-       map: panorama,
+       map: window.panorama,
        icon: image,
        shape: shape,
        title: name
@@ -203,7 +204,7 @@ async function initialize() {
     addInfoWindow(panoMarker, data[key], true)
     addInfoWindow(mapMarkers, data[key], false)
 
-    map.setOptions({draggable: false})
+    window.map.setOptions({draggable: false})
 
   }
 
@@ -211,9 +212,9 @@ async function initialize() {
 
   //keeps map center on pegman as moving in street view
   google.maps.event.addListener(panorama, 'position_changed', function() {
-    const position = panorama.getPosition()
+    const position = window.panorama.getPosition()
     const center = new google.maps.LatLng(position.lat(), position.lng())
-    map.panTo(center)
+    window.map.panTo(center)
   })
 
   //
@@ -221,6 +222,6 @@ async function initialize() {
     closeOverlay()
   })
 
-  await map.setStreetView(panorama)
+  await window.map.setStreetView(window.panorama)
 
 }
