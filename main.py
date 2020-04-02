@@ -10,7 +10,7 @@ import requests_cache
 from flask import Flask
 import json
 import csv
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -21,6 +21,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 requests_cache.install_cache(cache_name='dining_cache', backend='memory', expire_after=600)
 requests_cache.install_cache(cache_name='retail_cache', backend='memory', expire_after=600)
 
+# TODO: separate in into separate functions with timers to update fields instead of waiting for a request
 @app.route('/', methods=['GET'])
 def main():
 	dining_data = requests.get(url="https://downtownsantacruz.com/_api/v2/covid-dining.json").json()
@@ -82,6 +83,19 @@ def main():
 				                                               'online_order_link': online_order_link,
 				                                               'content': content})
 	return json.dumps(businesses)
+
+
+def _groups():
+	group_data = requests.get("https://downtownsantacruz.com/_api/v2/groups.json").json()
+	# Remap the dictionary as the keys in the provided API have no meaning, discarding those keys and the group type
+	# group dict's keys will be the group id and the value will be the properties
+	group_data = {value['properties']['group_id']: value['properties'] for (key, value) in group_data.items()}
+	return group_data
+
+
+@app.route('/groups', methods=['GET'])
+def groups():
+	return json.dumps(_groups())
 
 
 @app.route('/static/<name>')
