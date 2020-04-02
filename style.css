@@ -1,0 +1,119 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+header{
+  width:100%;
+  height: auto;
+  background-color: white;
+}
+.noscroll {
+  overflow: hidden;
+}
+#logo{
+  width: 50px;
+  margin: 10px auto;
+}
+#map {
+  position: absolute;
+  right:30px;
+  top:80px;
+  width: 250px;
+  height: 250px;
+  z-index:2
+}
+#pano {
+  position:relative;
+  height: calc(100% - 60px);
+  width: 100%;
+}
+
+#search{
+  float:left;
+  width: 30%;
+  margin:10px;
+  overflow:hidden;
+}
+
+input[type=text] {
+  width: 200px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  background-image: url('searchicon.png');
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+}
+
+input[type=text]:focus {
+  width: 100%;
+}
+
+
+/* Info Window Styling */
+
+#panocontent{}
+
+
+#mapcontent{
+  font-size: 12px;
+}
+
+#firstHeading{
+  font-weight:900;
+}
+
+  /* Styling for Overlay */
+
+#overlay{
+  position: absolute;
+  z-index:999;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0.8;
+}
+#closebutton{
+  position:absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height:40px;
+  font-size: 30px;
+  color: grey;
+  background-color:white;
+  font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
+  z-index:999;
+}
+
+#image-column{
+  position:absolute;
+  left:0;
+  top: 50px;
+  width: 25%
+}
+
+#image-column > img{
+  width: 400px;
+}
+
+#businesslogo{
+  width: 100%;
+  text-align:center;
+}
+
+#link-column{
+  position:absolute;
+  right:0;
+  top: 50px;
+  width:25%
+}
