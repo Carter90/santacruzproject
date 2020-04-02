@@ -87,9 +87,9 @@ def main():
 
 def _groups():
 	group_data = requests.get("https://downtownsantacruz.com/_api/v2/groups.json").json()
-	# Remap the dictionary as the keys in the provided API have no meaning, discarding those keys and the group type
+	# Remap the list as a dictionary as the keys in the provided API have no meaning, discarding those keys and the group type
 	# group dict's keys will be the group id and the value will be the properties
-	group_data = {value['properties']['group_id']: value['properties'] for (key, value) in group_data.items()}
+	group_data = {group['properties']['group_id']: group['properties'] for group in group_data}
 	return group_data
 
 
