@@ -139,10 +139,11 @@ def groups():
 
 
 @app.route('/demo/<name>')
-def resource(name):
+def demo(name):
 	"""Load a file from the demo directory and return it to the browser."""
 	with open('demo/' + name, 'rb') as f:
 		return f.read()
+
 
 @app.route('/static/<name>')
 def resource(name):
