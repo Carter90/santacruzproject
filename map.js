@@ -16,9 +16,9 @@ let ViewController = {
 let BusinessObj = {}
 let CurrentMarker = {}
 
-// Initial Fetch of Business Data
+// Initial Fetch of Business Data http://ec2-54-202-236-40.us-west-2.compute.amazonaws.com
 const fetchData = async () => {
-  return await fetch('http://ec2-54-202-236-40.us-west-2.compute.amazonaws.com', {
+  return await fetch('data31.json', {
     mode: 'cors',
     headers: {
       'Access-Control-Allow-Origin':'*'
@@ -47,7 +47,7 @@ const closeOverlay = () => {
 }
 
 const seeMore = () => {
-  ViewController.addPrevious(lat, lng);
+  //ViewController.addPrevious(lat, lng);
   goHere()
   //populate with business info
   openOverlay()
@@ -107,23 +107,30 @@ const addInfoWindow = (marker, businessObj, isPanoramic) => {
           '<div id="siteNotice">'+
           '</div>'+
           '<div id="firstHeading" class="firstHeading">' + businessObj.DTA_data.properties.point_name + '</div>'+
-        ' <input id="gohere" type="button" value="Go Here" onclick="goHere()"></input>'+
           '</div>'
     }
 
     let infoWindow = new google.maps.InfoWindow({
         content: content
     })
-    marker.addListener('click', function () {
-      Object.assign(CurrentMarker, marker)
-      infoWindow.open(map, marker)
-    })
-    // marker.addListener('mouseover', function () {
-    //   infoWindow.open(map, marker)
-    // })
-    // marker.addListener('mouseout', function () {
-    //   infoWindow.close(map, marker)
-    // })
+    if(isPanoramic == true){
+      marker.addListener('click', function () {
+        Object.assign(CurrentMarker, marker)
+        infoWindow.open(map, marker)
+      })
+    }
+    if(isPanoramic == false){
+      marker.addListener('mouseover', function () {
+        infoWindow.open(map, marker)
+      })
+      marker.addListener('mouseout', function () {
+        infoWindow.close(map, marker)
+      })
+      marker.addListener('click', function () {
+        Object.assign(CurrentMarker, marker)
+        goHere()
+      })
+    }
 
 }
 
@@ -151,12 +158,13 @@ window.panorama = new google.maps.StreetViewPanorama(
         position: startPacific,
         mode : 'webgl',
         pov: {
-          heading: 155,
-          pitch: 10
+          heading: 170,
+          pitch: 8
         },
         visible: true,
         motionTracking: false,
-        motionTrackingControl: false
+        motionTrackingControl: false,
+        zoom: 1
   })
 
   for (var key in data){

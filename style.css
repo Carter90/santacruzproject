@@ -21,7 +21,8 @@ header{
   top:80px;
   width: 250px;
   height: 250px;
-  z-index:2
+  z-index:2;
+  border:solid 3px #fff;
 }
 #pano {
   position:relative;
@@ -74,31 +75,37 @@ input[type=text]:focus {
 #overlay{
   position: absolute;
   z-index:999;
-  background-color: #fff;
-  position: fixed;
+  background: rgba(255,255,255, 0.8);
+  box-shadow: inset 0 0 100px yellow;
+  width:100%;
+  height:110%;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  opacity: 0.8;
 }
 #closebutton{
   position:absolute;
-  top: 20px;
+  top: 30px;
   right: 20px;
   width: 40px;
   height:40px;
   font-size: 30px;
-  color: grey;
-  background-color:white;
+  color: black;
+  background-color:transparent;
   font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
   z-index:999;
+  cursor: pointer;
+}
+
+#closebutton:hover{
+  color:red;
 }
 
 #image-column{
   position:absolute;
-  left:0;
-  top: 50px;
+  left: 65px;
+  top: 90px;
   width: 25%
 }
 
@@ -114,6 +121,6 @@ input[type=text]:focus {
 #link-column{
   position:absolute;
   right:0;
-  top: 50px;
+  top: 65px;
   width:25%
 }
