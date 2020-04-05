@@ -138,6 +138,12 @@ def groups():
 	return json.dumps(_groups())
 
 
+@app.route('/demo/<name>')
+def resource(name):
+	"""Load a file from the demo directory and return it to the browser."""
+	with open('demo/' + name, 'rb') as f:
+		return f.read()
+
 @app.route('/static/<name>')
 def resource(name):
 	"""Load a file from the static directory and return it to the browser."""
