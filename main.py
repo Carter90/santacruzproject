@@ -33,16 +33,14 @@ def main():
 	rideoutthewave_dict = {rotw_business['name']: rotw_business['gift_card_link'] for rotw_business in rideoutthewave_data if 'Santa Cruz'
 	                       in rotw_business['town']}
 	businesses = dict()
-	content = {'header': "I'm a header", 'header_link': "https://baconipsum.com/",
-	           'subheader1': "I'm the first subheading", 'subheader1_link': "https://baconipsum.com/",
-	           'subheader2': "I'm the second subheading", 'subheader2_link': "https://baconipsum.com/",
-	           'subheader3': "I'm the thrid subheading", 'subheader3_link': "https://baconipsum.com/"}
-	pictures = ["http://www.slojazzfest.org/uploads/1/7/0/6/17061274/woodstock-pizza-jpeg_6_orig.jpg",
-	            "https://woodstocksslo.com/wp-content/uploads/sites/6/2019/03/Triple_Threat_Menu_Header-min-1024x421.jpg",
-	            "https://woodstocksdavis.com/wp-content/uploads/sites/9/2018/02/Menu_Hero_TLSB_8757224_9921733.jpg"]
+	content = {'header': "", 'header_link': "",
+	           'subheader1': "", '': "",
+	           'subheader2': "", 'subheader2_link': "",
+	           'subheader3': "", 'subheader3_link': ""}
+	pictures = ["","","",""]
 
-	gift_card_link = "https://woodstockscruz.com/gift-cards/"
-	online_order_link = "https://woodstocks-pizza-santa-cruz.securebrygid.com/zgrid/proc/site/sitep.jsp"
+	gift_card_link = ""
+	online_order_link = ""
 
 	CSV_URL = 'https://docs.google.com/spreadsheets/d/1aCrPNN8GxowAwFjAo56SPBPmR24-iV9GLjnnGAu66O4/export?format=csv&id=1aCrPNN8GxowAwFjAo56SPBPmR24-iV9GLjnnGAu66O4&gid=1716473960'
 	with requests.Session() as s:
