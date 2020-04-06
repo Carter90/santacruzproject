@@ -18,7 +18,7 @@ let CurrentMarker = {}
 
 // Initial Fetch of Business Data http://ec2-54-202-236-40.us-west-2.compute.amazonaws.com
 const fetchData = async () => {
-  return await fetch('data31.json', {
+  return await fetch('http://ec2-54-202-236-40.us-west-2.compute.amazonaws.com', {
     mode: 'cors',
     headers: {
       'Access-Control-Allow-Origin':'*'
@@ -46,10 +46,11 @@ const closeOverlay = () => {
   document.getElementById("overlay").style.display = "none"
 }
 
-const seeMore = () => {
+const seeMore = (key) => {
   //ViewController.addPrevious(lat, lng);
   goHere()
   //populate with business info
+  overLay(key)
   openOverlay()
 }
 
@@ -84,20 +85,26 @@ const getRoadCoords = async (lat, lng) => {
 }
 
 // Info Window Addon Controller
-const addInfoWindow = (marker, businessObj, isPanoramic) => {
+const addInfoWindow = (marker, businessObj, isPanoramic, key) => {
 
   Object.assign(BusinessObj, businessObj)
 
   let content = ''
+  // added body content below 4/6/20 kg
+  let bcontent = 'More coming soon'
   if(isPanoramic == true ){
+	if (typeof businessObj.DTA_data.properties['covid-narrative'] !== 'undefined') {
+		bcontent = businessObj.DTA_data.properties['covid-narrative']
+	}
     content = '<div id="panocontent">'+
         '<div id="siteNotice">'+
         '</div>'+
         '<h1 id="firstHeading" class="firstHeading">' + businessObj.DTA_data.properties.point_name + '</h1>'+
         '<div id="bodyContent">'+
-        '<p><b>content</b>'+
+        '<p><b>' + bcontent + '</b>'+
         '</div>'+
-      ' <input id="seemore" type="button" value="See More" onclick="seeMore()"></input>'+
+      ' <input id="seemore" type="button" value="See More" onclick="seeMore('
+			+ key + ')"></input>'+
       ' <input id="comeinside" type="button" value="Go Inside" onclick="goInside()"></input>'+
         '</div>'
     }
@@ -134,6 +141,8 @@ const addInfoWindow = (marker, businessObj, isPanoramic) => {
 
 }
 
+var bData = {}; // global object to hold the returned data
+
 /******************
 Google Maps Init
 *******************/
@@ -141,6 +150,7 @@ async function initialize() {
 
   // fetch business data
   const data = await fetchData()
+  bData = data; // here's where it's stored
 
   //set map
   //starting coordinates
@@ -211,8 +221,9 @@ window.panorama = new google.maps.StreetViewPanorama(
        title: name
     })
 
-    addInfoWindow(panoMarker, data[key], true)
-    addInfoWindow(mapMarkers, data[key], false)
+	// added key argument so "seeMore" can populate popup 4/6/20 kg
+    addInfoWindow(panoMarker, data[key], true, key)
+    addInfoWindow(mapMarkers, data[key], false, key)
 
     window.map.setOptions({draggable: false})
 
