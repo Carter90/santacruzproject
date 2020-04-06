@@ -26,13 +26,13 @@ const overLay = (key) => {
 	 let linkCol = document.getElementById("link-column");
 	 newHtml = "";
 	 if (typeof businessObj.DTA_data.properties['website'] !== 'undefined')
-		newHtml += '<h3>Website</h3>' + businessObj.DTA_data.properties['website'];
+		newHtml += '<a href="' + businessObj.DTA_data.properties['website'] + '"><h3>Website</h3>' + businessObj.DTA_data.properties['website'] + '</a>';
 	 if (typeof businessObj.DTA_data.properties['telephone'] !== 'undefined')
 		newHtml += '<h3>Phone Number</h3>' + businessObj.DTA_data.properties['telephone'];
 	 if (typeof businessObj.online_order_link !== 'undefined')
-		newHtml += '<h3>Order Online Here</h3>' + businessObj.online_order_link;
+		newHtml += '<a href="' + businessObj.online_order_link + '"><h3>Order Online Here</h3></a>' ;
 	 if (typeof businessObj.gift_card_link!== 'undefined')
-		newHtml += '<h3>Purchase Gift Cards Here</h3>' + businessObj.gift_card_link;
+		newHtml += '<a href="' + businessObj.gift_card_link + '"><h3>Purchase Gift Cards Here</h3></a>';
 	linkCol.innerHTML = newHtml; // puts data in side column
 
 }
