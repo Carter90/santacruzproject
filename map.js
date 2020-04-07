@@ -74,7 +74,7 @@ const goInside = () => {
 
 // Gets Coordinates of road from nearest lat, lng using roads api
 const getRoadCoords = async (lat, lng) => {
-  return await fetch('https://roads.googleapis.com/v1/nearestRoads?points=' + lat + ',' + lng + '&key=AIzaSyDVjNL6rNtWlbUFymUbRb3KFRvMDTkIC')
+  return await fetch('https://roads.googleapis.com/v1/nearestRoads?points=' + lat + ',' + lng + '&key=AIzaSyDVjNL6rNtWlbUFymUbRb3KFRvMDTkIC-k')
   .then((response) => {
     return response.json()
   })
