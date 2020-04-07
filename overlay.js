@@ -25,13 +25,13 @@ const overLay = (key) => {
 	 // ^ puts correct business name on overlay page
 	 let linkCol = document.getElementById("link-column");
 	 newHtml = "";
-	 if (typeof businessObj.DTA_data.properties['website'] !== 'undefined')
+	 if (Boolean(businessObj.DTA_data.properties['website']))
 		newHtml += '<a href="' + businessObj.DTA_data.properties['website'] + '"><h3>Website</h3>' + businessObj.DTA_data.properties['website'] + '</a>';
-	 if (typeof businessObj.DTA_data.properties['telephone'] !== 'undefined')
+	 if (Boolean(businessObj.DTA_data.properties['telephone']))
 		newHtml += '<h3>Phone Number</h3>' + businessObj.DTA_data.properties['telephone'];
-	 if (typeof businessObj.online_order_link !== 'undefined')
+	 if (Boolean(businessObj.online_order_link))
 		newHtml += '<a href="' + businessObj.online_order_link + '"><h3>Order Online Here</h3></a>' ;
-	 if (typeof businessObj.gift_card_link!== 'undefined')
+	 if (Boolean(businessObj.gift_card_link))
 		newHtml += '<a href="' + businessObj.gift_card_link + '"><h3>Purchase Gift Cards Here</h3></a>';
 	linkCol.innerHTML = newHtml; // puts data in side column
 
