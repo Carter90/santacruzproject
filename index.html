@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Street View Side-By-Side</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Viga&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <header id="logoheader">
+      <div id="search">
+        <form>
+          <input type="text" name="search" placeholder="Search..">
+        </form>
+      </div>
+      <div id="logo">
+        <img src="images/logo.png" width="50px">
+      </div>
+    </header>
+    <div id="pano" class="noscroll">
+      <div id="map"></div>
+    </div>
+    <div id="overlay" class="noscroll" style="display:none;">
+      <div id="closebutton">X</div>
+      <div id="image-column">
+        <img src="https://www.bookshopsantacruz.com/sites/bookshopsantacruz.com/files/IMG_9370.jpg">
+        <img src="https://www.bookshopsantacruz.com/sites/bookshopsantacruz.com/files/IMG_9370.jpg">
+        <img src="https://www.bookshopsantacruz.com/sites/bookshopsantacruz.com/files/IMG_9370.jpg">
+        <img src="https://www.bookshopsantacruz.com/sites/bookshopsantacruz.com/files/IMG_9370.jpg">
+        <img src="https://www.bookshopsantacruz.com/sites/bookshopsantacruz.com/files/IMG_9370.jpg">
+      </div>
+      <div id="businesslogo"><h1>Bookshop Santa Cruz</h1></div>
+      <div id="link-column">
+        <h3>books to your door</h3>
+          <ul>
+            <li>by subject</li>
+            <li>by author</li>
+            <li>virtual browsing</li>
+          </ul>
+        <h3>On line Events</h3>
+          <ul>
+            <li>community discussion</li>
+            <li>book readings</li>
+            <li>story telling</li>
+            <li>virtual cider sipping</li>
+          </ul>
+
+        <h3>Buletin Board</h3>
+          <li>New Ideas for the future</li>
+      </div>
+    </div>
+    <script src="map.js"></script>
+    <script src="overlay.js"></script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVjNL6rNtWlbUFymUbRb3KFRvMDTkIC-k&callback=initialize">
+    </script>
+  </body>
+</html>
