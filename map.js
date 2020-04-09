@@ -18,7 +18,7 @@ let CurrentMarker = {}
 
 // Initial Fetch of Business Data http://ec2-54-202-236-40.us-west-2.compute.amazonaws.com
 const fetchData = async () => {
-  return await fetch('https://ec2-54-202-236-40.us-west-2.compute.amazonaws.com', {
+  return await fetch('http://ec2-54-202-236-40.us-west-2.compute.amazonaws.com', {
     mode: 'cors',
     headers: {
       'Access-Control-Allow-Origin':'*'
