@@ -38,25 +38,36 @@ const fetchData = async () => {
 const openOverlay = () => {
   let target = document.getElementById("overlay")
   target.style.display = "block"
+  let mtarget = document.getElementById('map') ;
+  mtarget.style.display = 'none';
+  document.getElementById("logoheader").style.display = "none"
 }
 
 const closeOverlay = () => {
   let prevCoords = ViewController.getPrevious()
   let goto = new google.maps.LatLng(prevCoords.lat, prevCoords.lng)
   document.getElementById("overlay").style.display = "none"
+  document.getElementById("map").style.display = "block"
+  document.getElementById("logoheader").style.display = "block"
 }
 
 const seeMore = (key) => {
   //ViewController.addPrevious(lat, lng);
-  goHere()
+  goHere(key)
   //populate with business info
   overLay(key)
   openOverlay()
 }
 
-const goHere = async () => {
-  const lng = CurrentMarker.position.lng()
-  const lat = CurrentMarker.position.lat()
+const goHere = async (key) => {
+  if ( CurrentMarker.position !== undefined) {
+	var lng = CurrentMarker.position.lng()
+    var lat = CurrentMarker.position.lat()
+  } else {
+	let cords = bData[key].DTA_data.geometry.coordinates; // coords from json
+	var lng = cords[0];
+    var lat = cords[1];
+  }
   const roadCoords = await getRoadCoords(lat,lng)
   console.log('go here', lng, lat, roadCoords)
   let goto = new google.maps.LatLng(roadCoords.latitude, roadCoords.longitude)
@@ -135,7 +146,7 @@ const addInfoWindow = (marker, businessObj, isPanoramic, key) => {
       })
       marker.addListener('click', function () {
         Object.assign(CurrentMarker, marker)
-        goHere()
+        goHere(key)
       })
     }
 
@@ -243,6 +254,14 @@ window.panorama = new google.maps.StreetViewPanorama(
     closeOverlay()
   })
 
+  document.getElementsByName("search")[0]
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+		let stext= document.getElementsByName("search")[0].value
+        searchTerm(stext);
+    }
+});
   await window.map.setStreetView(window.panorama)
 
 }
