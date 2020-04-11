@@ -72,6 +72,9 @@ const goHere = async (key) => {
   console.log('go here', lng, lat, roadCoords)
   let goto = new google.maps.LatLng(roadCoords.latitude, roadCoords.longitude)
   panorama.setPosition(goto)
+  var heading = google.maps.geometry.spherical.computeHeading(goto, CurrentMarker.position);
+  panorama.setPov({heading: heading, pitch: 0, zoom: 1});
+  panorama.setVisible(true);
 }
 
 const goInside = () => {
