@@ -107,7 +107,7 @@ input[type=text]:focus {
   right: 20px;
   width: 40px;
   height:40px;
-  font-size: 30px;
+  font-size: 20px;
   color: black;
   background-color:transparent;
   font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
@@ -143,4 +143,8 @@ input[type=text]:focus {
   top: 65px;
   width:25%;
   word-wrap: break-word;
+}
+
+#searchResults{
+  font-family: 'Viga', sans-serif;
 }

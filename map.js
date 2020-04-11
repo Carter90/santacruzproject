@@ -51,22 +51,24 @@ const closeOverlay = () => {
   document.getElementById("logoheader").style.display = "block"
 }
 
-const seeMore = (key) => {
+const seeMore = (key,search) => {
   //ViewController.addPrevious(lat, lng);
-  goHere(key)
+  goHere(key,search)
   //populate with business info
   overLay(key)
   openOverlay()
 }
 
-const goHere = async (key) => {
-  if ( CurrentMarker.position !== undefined) {
-	var lng = CurrentMarker.position.lng()
-    var lat = CurrentMarker.position.lat()
-  } else {
+const goHere = async (key,search) => {
+  if ( Boolean(search) ) {
 	let cords = bData[key].DTA_data.geometry.coordinates; // coords from json
 	var lng = cords[0];
     var lat = cords[1];
+    CurrentMarker.position = new google.maps.LatLng(lat,lng); // sets first position for markers
+  // needed if search before movement
+  } else {
+	var lng = CurrentMarker.position.lng()
+    var lat = CurrentMarker.position.lat()
   }
   const roadCoords = await getRoadCoords(lat,lng)
   console.log('go here', lng, lat, roadCoords)
@@ -137,7 +139,8 @@ const addInfoWindow = (marker, businessObj, isPanoramic, key) => {
     if(isPanoramic == true){
       marker.addListener('click', function () {
         Object.assign(CurrentMarker, marker)
-        infoWindow.open(map, marker)
+//        infoWindow.open(map, marker) // removed so no infoWindow, just go
+		seeMore(key)
       })
     }
     if(isPanoramic == false){
@@ -156,6 +159,8 @@ const addInfoWindow = (marker, businessObj, isPanoramic, key) => {
 }
 
 var bData = {}; // global object to hold the returned data
+var fuseSearch ;
+var listOfObjects = []; // global object for search
 
 /******************
 Google Maps Init
@@ -168,7 +173,7 @@ async function initialize() {
 
   //set map
   //starting coordinates
-  let startPacific = {lat: 36.976725, lng: -122.0269576}
+  var startPacific = {lat: 36.976725, lng: -122.0269576}
 
 window.map = new google.maps.Map(document.getElementById('map'), {
     center: startPacific,
@@ -190,6 +195,8 @@ window.panorama = new google.maps.StreetViewPanorama(
         motionTrackingControl: false,
         zoom: 1
   })
+
+  CurrentMarker.position = new google.maps.LatLng(startPacific); // sets first position for markers
 
   for (var key in data){
 
@@ -241,6 +248,11 @@ window.panorama = new google.maps.StreetViewPanorama(
 
     window.map.setOptions({draggable: false})
 
+	let singleObj = {};
+    singleObj['key'] = key;
+    singleObj['value'] = data[key];
+    listOfObjects.push(singleObj);
+
   }
 
   // Event Listeners
@@ -265,6 +277,14 @@ window.panorama = new google.maps.StreetViewPanorama(
         searchTerm(stext);
     }
 });
+
+  document.onkeydown = function(evt) { // to close overlay window with esc
+    evt = evt || window.event;
+    if (evt.keyCode == 27) {
+		closeOverlay();
+     }
+};
+
   await window.map.setStreetView(window.panorama)
 
 }

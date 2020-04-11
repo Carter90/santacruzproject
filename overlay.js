@@ -50,7 +50,8 @@ const overLay = (key) => {
 			'">' + businessObj.gift_card_link + '</a></li></ul></li>';
 	 }
 	 if (Boolean(businessObj.DTA_data.properties['website']))
-		newHtml += '<li>Website: ' + businessObj.DTA_data.properties['website'] + "</li>";
+		newHtml += '<li><a href="' + businessObj.DTA_data.properties['website'] + 
+			'">Website: ' + businessObj.DTA_data.properties['website'] + "</a></li>";
 	 if (Boolean(businessObj.DTA_data.properties['telephone']))
 		newHtml += '<li>' + businessObj.DTA_data.properties['telephone'] + '</li>';
 	 newHtml += "</ul>";
@@ -65,18 +66,38 @@ const overLay = (key) => {
  */
 const searchTerm = (sTerm) => {
 	let businessObj = bData;
-	let newHtml = "<ul>" ;
-	 
-	for (var key in businessObj) {
-		let sString = businessObj[key].DTA_data.properties.point_name;
-		let cords = businessObj[key].DTA_data.geometry.coordinates
-		re = new RegExp(sTerm,'i') ;
-		if (re.test(sString)) { // found sTerm in string
-			newHtml += '<li><a href="' + 'javascript:thenGoHere(' + key +
+
+	const options2 = {
+	  limit: 10, // don't return more results than you need!
+	  threshold: -10000, // don't return bad results
+
+	  keys: ['value.DTA_data.properties.point_name',
+			'value.content.header',
+			'value.group.group_nested_label',
+			'value.group.group_label',
+			'value.DTA_data.properties.covid-narrative']
+	}
+	const result2 = fuzzysort.go(sTerm,listOfObjects,options2);
+	
+	if ( result2['total'] != 0 ) {
+	var newHtml = "<ul>" ;
+	for (var rkey in result2) {
+	  if (rkey != "total") { // there's one final rkey that's not data
+		let rscore = result2[rkey]['score'] ;
+		console.log("Score " + rkey + " = " + rscore + " " + 
+			businessObj[result2[rkey]['obj']['key']].DTA_data.properties.point_name);
+		if ( rscore > -1000) { // good result
+			let bkey = result2[rkey]['obj']['key'] ;
+			let sString = businessObj[bkey].DTA_data.properties.point_name;
+			newHtml += '<li><a href="' + 'javascript:thenGoHere(' + result2[rkey]['obj']['key'] +
 			')">' + sString + "</a></li>" ;
 		}
-	}
+	  }
+	}			
 	newHtml += "</ul>";
+	} else {
+		var newHtml = "No Results Found";
+	}
 	document.getElementById("searchResults").innerHTML = newHtml;
 }
 
@@ -85,7 +106,7 @@ const searchTerm = (sTerm) => {
  *      @param key index in data structure
  */
 const thenGoHere = (key) => {
-	CurrentMarker.position = undefined ;
+//	CurrentMarker.position = undefined ;
 	// need to do this to force move to searched business
-	seeMore(key);
+	seeMore(key,true);
 }
