@@ -285,6 +285,26 @@ window.panorama = new google.maps.StreetViewPanorama(
      }
 };
 
+  const commit = await fetchGitCommit();
+  let comdiv = document.getElementById("revision");
+  let version = commit[0]['sha'].substr(0, 7);
+  comdiv.innerHTML = "<strong>" + version + "</strong>";
+  
   await window.map.setStreetView(window.panorama)
-
 }
+
+/**
+ *      function to fetch github version sha
+ */
+const fetchGitCommit = async () => {
+  return await fetch('https://api.github.com/repos/Carter90/santacruzproject/commits')
+  .then(response => response.json())
+  .then(data => {
+    //console.log(data)
+    return data
+  })
+  .catch(function() {
+        console.log("git commit fetch error");
+  });
+}
+
