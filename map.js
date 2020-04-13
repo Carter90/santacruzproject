@@ -285,26 +285,23 @@ window.panorama = new google.maps.StreetViewPanorama(
      }
 };
 
-  const commit = await fetchGitCommit();
-  let comdiv = document.getElementById("revision");
-  let version = commit[0]['sha'].substr(0, 7);
-  comdiv.innerHTML = "<strong>" + version + "</strong>";
-  
+  const head   = await fetchGitHead();
   await window.map.setStreetView(window.panorama)
 }
 
 /**
- *      function to fetch github version sha
+ *      function to fetch github version from files copied from github to server
  */
-const fetchGitCommit = async () => {
-  return await fetch('https://api.github.com/repos/Carter90/santacruzproject/commits')
-  .then(response => response.json())
-  .then(data => {
-    //console.log(data)
-    return data
-  })
-  .catch(function() {
-        console.log("git commit fetch error");
+const fetchGitHead = async () => {
+  var myRequest = new Request("http://ec2-54-202-236-40.us-west-2.compute.amazonaws.com/demo/.git/FETCH_HEAD");
+  fetch(myRequest).then(function(response) {
+    return response.text().then(function(text) {
+		let rev = text.substr(0, 7)
+		console.log(rev);
+		let comdiv = document.getElementById("revision");
+		comdiv.innerHTML = "<strong>" + rev + "</strong>";
+		return rev;
+    });
   });
 }
 
