@@ -8,7 +8,7 @@
    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
   </head>
   <body>
-	<header id="logoheader">
+    <header id="logoheader">
       <div id="search">
           <input type="text" name="search" placeholder="Search..">
       </div>
@@ -20,8 +20,8 @@
     </header>
     <div id="pano" class="noscroll">
       <div id="map"></div>
-    </div>  
-    <div id="overlay" class="noscroll">
+    </div>
+    <div id="overlay" class="noscroll" style="display:none;">
       <div id="closebutton"> <img src="images/close.text.button.png"></div>
       <div id="image-column">
         <img src="https://www.bookshopsantacruz.com/sites/bookshopsantacruz.com/files/IMG_9370.jpg">
@@ -30,7 +30,6 @@
       </div>
       <div id="businesslogo">
 		  <div id="logo-inner-box">
-		   <img src="images/bookshop.SC.png">
 		  </div>
 	  </div>
       <div id="link-column">
@@ -53,9 +52,9 @@
       	</div>
       </div>
     <div id="revision"></div>
-	<script src="map.js"></script>
+    <script src="map.js"></script>
     <script src="overlay.js"></script>
-	 <script async defer
+    <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVjNL6rNtWlbUFymUbRb3KFRvMDTkIC-k&callback=initialize">
     </script>
 	<script src="fuzzysort.js"></script>

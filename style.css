@@ -2,16 +2,13 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-image: url(images/background.street.jpg);
   background-size: cover;
-  overflow: hidden;
 }
 header{
   width:100%;
   height: auto;
   background-color: white;
 }
-
 .noscroll {
   overflow: hidden;
 }
@@ -95,7 +92,6 @@ input[type=text]:focus {
   font-weight: bolder;
   font-family: 'Kalam', cursive;
 }
-
 #overlay a {
   color: rgb(136,243,184); 
   font-family: 'Lato', sans-serif;
@@ -108,7 +104,6 @@ ul, li {
   line-height: 1.4;
   color: rgb(136,243,184);
 }
-
 
 h1 {
   font-family:  'Kalam', cursive;
@@ -127,7 +122,6 @@ h2 {
   color: rgb(136,243,184);
 }
 
-
 h3 {
   font-family:  'Kalam', cursive;
   font-size: 1.55rem;
@@ -135,7 +129,6 @@ h3 {
   line-height: 1.1;
   color: rgb(136,243,184);
 }
-
 
 #closebutton{
   position:absolute;
@@ -156,7 +149,7 @@ h3 {
   width: 25%
 }
 
-#image-column img{
+#image-column > img{
   width: 100%;
   max-width: 400px;
   height: auto;
@@ -193,6 +186,7 @@ h3 {
   right:150px;
   top: 120px;
   width:25%;
+  word-wrap: break-word;
 }
 
 #inner-text{
