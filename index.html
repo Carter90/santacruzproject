@@ -4,10 +4,11 @@
     <meta charset="utf-8">
     <title>Street View Side-By-Side</title>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <link href="https://fonts.googleapis.com/css?family=Viga&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
   </head>
   <body>
-    <header id="logoheader">
+	<header id="logoheader">
       <div id="search">
           <input type="text" name="search" placeholder="Search..">
       </div>
@@ -19,40 +20,42 @@
     </header>
     <div id="pano" class="noscroll">
       <div id="map"></div>
-    </div>
-    <div id="overlay" class="noscroll" style="display:none;">
-      <div id="closebutton">X</div>
+    </div>  
+    <div id="overlay" class="noscroll">
+      <div id="closebutton"> <img src="images/close.text.button.png"></div>
       <div id="image-column">
         <img src="https://www.bookshopsantacruz.com/sites/bookshopsantacruz.com/files/IMG_9370.jpg">
         <img src="https://www.bookshopsantacruz.com/sites/bookshopsantacruz.com/files/IMG_9370.jpg">
         <img src="https://www.bookshopsantacruz.com/sites/bookshopsantacruz.com/files/IMG_9370.jpg">
-        <img src="https://www.bookshopsantacruz.com/sites/bookshopsantacruz.com/files/IMG_9370.jpg">
-        <img src="https://www.bookshopsantacruz.com/sites/bookshopsantacruz.com/files/IMG_9370.jpg">
       </div>
-      <div id="businesslogo"><h1>Bookshop Santa Cruz</h1></div>
+      <div id="businesslogo">
+		  <div id="logo-inner-box">
+		   <img src="images/bookshop.SC.png">
+		  </div>
+	  </div>
       <div id="link-column">
-        <h3>books to your door</h3>
-          <ul>
-            <li>by subject</li>
-            <li>by author</li>
-            <li>virtual browsing</li>
-          </ul>
-        <h3>On line Events</h3>
-          <ul>
-            <li>community discussion</li>
-            <li>book readings</li>
-            <li>story telling</li>
-            <li>virtual cider sipping</li>
-          </ul>
-
-        <h3>Buletin Board</h3>
-          <li>New Ideas for the future</li>
+		 <div id="inner-text">
+           <h1>Bookshop Santa Cruz</h1>
+		   <h2>Independent bookstore located in the heart of downtown Santa Cruz, California since 1966</h2>
+           <h3>On line Events</h3>
+             <ul>
+               <li>community discussion</li>
+               <li>book readings</li>
+               <li>story telling</li>
+               <li>virtual cider sipping</li>
+            </ul>
+             <h3>Buletin Board</h3>
+		 </div>
+		    <div id="link-button">
+			    <img src="images/homelink.board.png">
+                <img src="images/giftlink.board.png">
+		    </div>
+      	</div>
       </div>
-    </div>
     <div id="revision"></div>
-    <script src="map.js"></script>
+	<script src="map.js"></script>
     <script src="overlay.js"></script>
-    <script async defer
+	 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVjNL6rNtWlbUFymUbRb3KFRvMDTkIC-k&callback=initialize">
     </script>
 	<script src="fuzzysort.js"></script>
