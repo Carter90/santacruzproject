@@ -41,6 +41,7 @@ const openOverlay = () => {
   let mtarget = document.getElementById('map') ;
   mtarget.style.display = 'none';
   document.getElementById("logoheader").style.display = "none"
+  document.getElementById("searchResults").style.display = "none"
 }
 
 const closeOverlay = () => {
@@ -49,6 +50,7 @@ const closeOverlay = () => {
   document.getElementById("overlay").style.display = "none"
   document.getElementById("map").style.display = "block"
   document.getElementById("logoheader").style.display = "block"
+  document.getElementById("searchResults").style.display = "block"
 }
 
 const seeMore = (key,search) => {
@@ -203,16 +205,26 @@ window.panorama = new google.maps.StreetViewPanorama(
     let dot = ''
     if(data[key].type == 'dining'){
       dot = '/images/reddot.png'
+      spot= 'images/red.face.30.png'
     }
     if(data[key].type == 'retail'){
       dot = '/images/greendot.png'
+      spot= 'images/green.face.30.png'
     }
     if(data[key].type == 'play'){
       dot = '/images/bluedot.png'
+      spot= 'images/blue.face.30.png'
     }
 
     let image = {
       url: dot,
+      size: new google.maps.Size(40, 40),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(0, 32)
+    }
+
+    let spotImage = {
+      url: spot,
       size: new google.maps.Size(40, 40),
       origin: new google.maps.Point(0, 0),
       anchor: new google.maps.Point(0, 32)
@@ -237,7 +249,7 @@ window.panorama = new google.maps.StreetViewPanorama(
     let panoMarker = new google.maps.Marker({
        position: new google.maps.LatLng(cords[1],cords[0]),
        map: window.panorama,
-       icon: image,
+       icon: spotImage,
        shape: shape,
        title: name
     })

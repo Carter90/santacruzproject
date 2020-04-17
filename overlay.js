@@ -17,12 +17,14 @@ const overLay = (key) => {
 	 let images = document.getElementById("image-column")
 	 let newHtml = "";
 
-	 document.getElementById("businesslogo").innerHTML = '<h1>' + businessObj.DTA_data.properties.point_name + '</h1>'
+	 document.getElementById("businesslogo").innerHTML = '<div id="logo-inner-box""><h1>' + 
+					businessObj.DTA_data.properties.point_name + '</h1></div>'
 	 // ^ puts correct business name on overlay page
 
 	 if (Boolean(businessObj.images[0])) { // override text if image[0] exists
 		 document.getElementById("businesslogo").innerHTML = 
-			'<img src="' + businessObj.images[0] + '" width=150px height=150px>'
+			'<div id="logo-inner-box"><img src="' + businessObj.images[0] + 
+				'"></div>'
 	 } 
 	 	 
 	 for(let i = 1; i < businessObj.images.length; i++) {
@@ -32,29 +34,30 @@ const overLay = (key) => {
 	 
 	 let linkCol = document.getElementById("link-column");
 	 newHtml = "";
-	 if (Boolean(businessObj.group['group_nested_label']))
-		newHtml += '<h2>' + businessObj.group['group_nested_label'] + '</h2>';
-	 if (Boolean(businessObj.content['subheader1']))
-		newHtml += '<h3>' + businessObj.content['subheader1'] + '</h3>';
-	 if (Boolean(businessObj.DTA_data.properties['covid-narrative']))
-		newHtml += '<h3>' + businessObj.DTA_data.properties['covid-narrative'] + '</h3>';
-	 newHtml += "<ul>";
-	 if (Boolean(businessObj.online_order_link)) {
-		 newHtml += "<li>Online Order Link<ul><li>";
-		newHtml += '<a href="' + businessObj.online_order_link + 
-			'">' + businessObj.online_order_link + '</a></li></ul></li>' ;
-	 }
-	 if (Boolean(businessObj.gift_card_link)) {
-		 newHtml += "<li>Gift Card Link<ul><li>";
-		newHtml += '<a href="' + businessObj.gift_card_link + 
-			'">' + businessObj.gift_card_link + '</a></li></ul></li>';
-	 }
-	 if (Boolean(businessObj.DTA_data.properties['website']))
-		newHtml += '<li><a href="' + businessObj.DTA_data.properties['website'] + 
-			'">Website: ' + businessObj.DTA_data.properties['website'] + "</a></li>";
+	 if (Boolean(businessObj.DTA_data.properties.point_name))
+		newHtml += '<h1>' + businessObj.DTA_data.properties.point_name + '</h1>';
 	 if (Boolean(businessObj.DTA_data.properties['telephone']))
-		newHtml += '<li>' + businessObj.DTA_data.properties['telephone'] + '</li>';
-	 newHtml += "</ul>";
+		newHtml += '<h2>' + businessObj.DTA_data.properties['telephone'] + '</h2>';
+	 if (Boolean(businessObj.DTA_data.properties['covid-narrative']))
+		newHtml += '<h2>' + businessObj.DTA_data.properties['covid-narrative'] + '</h2>';
+	 if (Boolean(businessObj.content['subheader1']))
+		newHtml += '<h2>' + businessObj.content['subheader1'] + '</h2>';
+	 if (Boolean(businessObj.DTA_data.properties['website'])) {
+		newHtml += '<a href="' + 
+						businessObj.DTA_data.properties['website'] + 
+						'"><img src="images/homelink.board.png"></a>';
+	 }
+/*	 if (Boolean(businessObj.group['group_nested_label']))
+		newHtml += '<h2>' + businessObj.group['group_nested_label'] + '</h2>';*/
+	 if (Boolean(businessObj.gift_card_link)) {
+		newHtml += '<a href="' + 
+						businessObj.gift_card_link + 
+						'"><img src="images/giftlink.board.png"></a>';
+	 }
+	 if (Boolean(businessObj.online_order_link)) {
+		newHtml += '<a href="' + businessObj.online_order_link + 
+						'"><img src="images/shop.board.png"></a>';
+	 }
 	linkCol.innerHTML = newHtml; // puts data in side column
 
 }
