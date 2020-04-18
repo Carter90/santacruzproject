@@ -45,18 +45,18 @@ const overLay = (key) => {
 	 if (Boolean(businessObj.DTA_data.properties['website'])) {
 		newHtml += '<a href="' + 
 						businessObj.DTA_data.properties['website'] + 
-						'"><img src="images/homelink.board.png"></a>';
+						'" target="_blank"><img src="images/homelink.board.png"></a>';
 	 }
 /*	 if (Boolean(businessObj.group['group_nested_label']))
 		newHtml += '<h2>' + businessObj.group['group_nested_label'] + '</h2>';*/
 	 if (Boolean(businessObj.gift_card_link)) {
 		newHtml += '<a href="' + 
 						businessObj.gift_card_link + 
-						'"><img src="images/giftlink.board.png"></a>';
+						'" target="_blank"><img src="images/giftlink.board.png"></a>';
 	 }
 	 if (Boolean(businessObj.online_order_link)) {
 		newHtml += '<a href="' + businessObj.online_order_link + 
-						'"><img src="images/shop.board.png"></a>';
+						'" target="_blank"><img src="images/shop.board.png"></a>';
 	 }
 	linkCol.innerHTML = newHtml; // puts data in side column
 

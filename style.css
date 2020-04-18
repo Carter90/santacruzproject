@@ -147,7 +147,7 @@ h3 {
   position:absolute;
   left: 8%;
   top: 125px;
-  width: 30%
+  width: 26%
 }
 
 #image-column > img{
@@ -159,10 +159,7 @@ h3 {
 
 #businesslogo{
   width: 100%;
-  text-align:center;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 10px;
+  padding-top: 20px;
 }
 
 #businesslogo h1 {
@@ -170,13 +167,15 @@ h3 {
 }
 
 #logo-inner-box {
-  display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 50%;
   background-color: rgba(131,125,138,0.80);
   max-width: 180px;
   padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  align-self: center;
+  text-align: center;
 }
 
 #logo-inner-box img{
