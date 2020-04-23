@@ -16,6 +16,17 @@ const overLay = (key) => {
 	 let businessObj = bData[key];
 	 let images = document.getElementById("image-column")
 	 let newHtml = "";
+	 
+	let target = document.getElementById("overlay")
+	var backs = new Array("blue.yellow.center.png",
+							"red.spiral.small.png",
+							"rainbow.wave.smallest.png",
+							"purple.orb.small.png",
+							"green.orb.small.png",
+							"blue.wave.verysmall.png");
+	let index = Math.floor(Math.random() * 6); // returns a random integer from 0 to 5
+	let urlString = "url(images/" + backs[index] + ")"; // random image selected
+	target.style.backgroundImage =  urlString; // sets background image
 
 	 document.getElementById("businesslogo").innerHTML = '<div id="logo-inner-box""><h1>' + 
 					businessObj.DTA_data.properties.point_name + '</h1></div>'
